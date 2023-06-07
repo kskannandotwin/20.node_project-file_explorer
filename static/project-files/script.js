@@ -46,7 +46,7 @@ const sort_name = (items, option) => {
     return 0;
   });
   // reverse the array if the option is down
-  if(option === 'down') {
+  if (option === "down") {
     items.reverse();
   }
 };
@@ -59,16 +59,27 @@ const fill_table_body = (items) => {
 };
 
 // event listeners
-document.getElementById("name").addEventListener("click", () => {
-  if (["none", "down"].includes(sortStatus.name)) {
-    // sort in ascending order
-    sort_name(items, 'up');
-    sortStatus.name = 'up';
+document.getElementById("table_head_row").addEventListener("click", (event) => {
+  if (event.target) {
+    if (event.target.id === "name") {
+      // clear icons
+      $('i').remove();
+      let status;
+      if (["none", "down"].includes(sortStatus.name)) {
+        // sort in ascending order
+        sort_name(items, "up");
+        status = "up";
+        // add icon
+        event.target.innerHTML += ' <i class="fa fa-arrow-circle-up"></i>';
+      } else if (sortStatus.name === "up") {
+        // sort in decending order
+        sort_name(items, "down");
+        status = "down";
+        // add icon
+        event.target.innerHTML += ' <i class="fa fa fa-arrow-circle-down"></i>';
+      }
+      sortStatus.name = status;
+      fill_table_body(items);
+    }
   }
-  else if (sortStatus.name === "up") {
-    // sort in decending order
-    sort_name(items, 'down');
-    sortStatus.name = 'down';
-  }
-  fill_table_body(items);
 });
