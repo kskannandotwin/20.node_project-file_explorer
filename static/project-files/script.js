@@ -27,22 +27,31 @@ console.log(items);
 // order status
 const sortStatus = {
   name: "none", // none, up, down
-  // size:'',
-  // time:''
+  size: "none", // none, up, down
+  time: "none", // none, up, down
 };
 
-const sort_name = (items, option) => {
+const sort = (items, option, type) => {
   items.sort((item1, item2) => {
-    const name1 = item1.name.toUpperCase();
-    const name2 = item2.name.toUpperCase();
-    if (name1 < name2) {
+    let value1, value2;
+    if (type === "name") {
+      value1 = item1.name.toUpperCase();
+      value2 = item2.name.toUpperCase();
+    } else if (type === "size") {
+      value1 = item1.size;
+      value2 = item2.size;
+    } else {
+      value1 = item1.time;
+      value2 = item2.time;
+    }
+    if (value1 < value2) {
       return -1;
     }
-    if (name1 > name2) {
+    if (value1 > value2) {
       return 1;
     }
 
-    // equal names
+    // equal values
     return 0;
   });
   // reverse the array if the option is down
@@ -61,25 +70,21 @@ const fill_table_body = (items) => {
 // event listeners
 document.getElementById("table_head_row").addEventListener("click", (event) => {
   if (event.target) {
-    if (event.target.id === "name") {
-      // clear icons
-      $('i').remove();
-      let status;
-      if (["none", "down"].includes(sortStatus.name)) {
-        // sort in ascending order
-        sort_name(items, "up");
-        status = "up";
-        // add icon
-        event.target.innerHTML += ' <i class="fa fa-arrow-circle-up"></i>';
-      } else if (sortStatus.name === "up") {
-        // sort in decending order
-        sort_name(items, "down");
-        status = "down";
-        // add icon
-        event.target.innerHTML += ' <i class="fa fa fa-arrow-circle-down"></i>';
-      }
-      sortStatus.name = status;
-      fill_table_body(items);
+    // clear icons
+    $("i").remove();
+    if (["none", "down"].includes(sortStatus[event.target.id])) {
+      // sort in ascending order
+      sort(items, "up", event.target.id);
+      sortStatus[event.target.id] = "up";
+      // add icon
+      event.target.innerHTML += ' <i class="fa fa-arrow-circle-up"></i>';
+    } else if (sortStatus[event.target.id] === "up") {
+      // sort in decending order
+      sort(items, "down", event.target.id);
+      sortStatus[event.target.id] = "down";
+      // add icon
+      event.target.innerHTML += ' <i class="fa fa fa-arrow-circle-down"></i>';
     }
+    fill_table_body(items);
   }
 });
